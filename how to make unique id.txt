@@ -1,0 +1,15 @@
+adjust the time to your location
+date_default_timezone_set('Etc/GMT-7');
+//get unique id from microtime
+$unique = uniqid();
+echo $unique. '<br>';
+
+//get timestamp from uniqid
+$timestamp = substr($unique, 0, -5);
+echo date('r', hexdec($timestamp));
+https://jasonmccreary.me/articles/php-convert-uniqid-to-timestamp/
+https://github.com/php/php-src/blob/master/ext/standard/uniqid.c
+
+//more unique id
+echo $u = sprintf("%010s-%s", time(), uniqid(true));
+https://stackoverflow.com/questions/7867874/unique-id-with-time

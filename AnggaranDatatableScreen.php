@@ -54,7 +54,7 @@ class AnggaranDatatableScreen extends Screen
                 ["title"=> "Action", "data"=> 'action', "name"=> 'action', "orderable"=> false, "searchable"=> false]
             ]);
 
-            $plugins = [];
+            $plugins = ['fixed_columns'];
 
             $dependencies = [
                 'scripts_before' => [], //array of url script will be load before datatable plugin
@@ -76,7 +76,8 @@ class AnggaranDatatableScreen extends Screen
                     'scripts'=> $scripts,
                     'styles' => $styles,
                     'plugins' => $plugins,
-                    'dependencies' => $dependencies
+                    'dependencies' => $dependencies,
+                    'styling'=> 'bootstrap5'
                 ],
             ];
         }

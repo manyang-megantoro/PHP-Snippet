@@ -21,7 +21,6 @@ class Datatable extends Component
      * 'ajax-server' => ['source'=>'ajax-server', 'html' => $html, "table_id" => $table_id, 'url' => $url]
      * 'other' => ['html' => $html,'scripts'=>$scripts]
      *
-     * TO DO : plugins, styling
      * @return void
      */
     public function __construct(Dashboard $dashboard, array $params){
@@ -58,7 +57,7 @@ class Datatable extends Component
         }
 
         //if jquery needed add jquery script
-        if($params['jquery']) $dashboard->registerResource('scripts', $resouces_url."/js/jquery.min.js");
+        if($params['jquery']) $dashboard->registerResource('scripts', $resouces_url.'/DataTables/DataTables/js/jquery.min.js');
 
         //add dependencies needed before datatable plugin
 
@@ -75,25 +74,31 @@ class Datatable extends Component
         }
 
         //add main script and style
-        $scripts = ['datatable' => $resouces_url."/js/jquery.dataTables.min.js"];
-        $styles = ['datatable' => $resouces_url."/css/dataTables.dataTables.min.css"];
+        $scripts = ['datatable' => $resouces_url.'/DataTables/DataTables/js/jquery.dataTables.min.js'];
 
         //add styling
-        switch ($params['styling']) {
-            case 'bootstrap-4':
-                $scripts['datatable_bootstrap_4'] = $resouces_url."/js/dataTables.bootstrap4.min.js";
-                $styles['datatable_bootstrap_4'] = $resouces_url."/css/dataTables.bootstrap4.min.css";
-                break;
+        if($params['styling'] !== 'jquery'){
+            $scripts['datatable_'.$params['styling']] = $resouces_url.'/DataTables/DataTables/js/dataTables.'.$params['styling'].'.min.js';
+            $styles['datatable_'.$params['styling']] = $resouces_url.'/DataTables/DataTables/css/dataTables.'.$params['styling'].'.min.css';
+        }else{
+            $styles = ['datatable' => $resouces_url.'/DataTables/DataTables/css/jquery.dataTables.min.css'];
         }
 
         if(!empty($params['plugins'])){
             foreach ($params['plugins'] as $plugin) {
-                switch ($plugin) {
-                    case 'bootstrap-4':
-                        $scripts['datatable_bootstrap_4'] = $resouces_url."/js/dataTables.bootstrap4.min.js";
-                        $styles['datatable_bootstrap_4'] = $resouces_url."/css/dataTables.bootstrap4.min.css";
-                        break;
+                $separator = '_';
+                $file_name = str_replace($separator, '', lcfirst(ucwords($plugin, $separator)));
+                $folder_name =str_replace($separator, '', ucwords($plugin, $separator));
+
+                //add plugin script
+                $scripts['datatable_'.$file_name] = $resouces_url.'/DataTables\/'.$folder_name.'/js/dataTables.'.$file_name.'.min.js';
+
+                if($params['styling'] !== 'jquery'){
+                    //add plugin script dependent by styling
+                    $scripts['datatable_'.$file_name.'_'.$params['styling']] = $resouces_url.'/DataTables\/'.$folder_name.'/js\/'.$file_name.'.'.$params['styling'].'.min.js';
+                    $styles['datatable_'.$file_name.'_'.$params['styling']] = $resouces_url.'/DataTables\/'.$folder_name.'/css\/'.$file_name.'.'.$params['styling'].'.min.css';
                 }
+
             }
         }
 

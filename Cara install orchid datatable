@@ -1,0 +1,53 @@
+1. composer create-project laravel/laravel . "8.*" --prefer-dist
+2. Set “chmod -R o+w” rights to the storage and bootstrap/cache directories
+3. Create database
+4. Edit the .env file
+5. php artisan key:generate
+6. composer require orchid/platform
+7. php artisan orchid:install
+8. php artisan vendor:publish , pilih view (ketik nomor view)
+9. php artisan orchid:admin admin admin@admin.com password
+10. php artisan serve
+11. edit resources/views/vendor/platform/layouts/block.blade.php tambahkan px-4 py-3 setelah bg-white line 13
+12. edit routes/platform.php, remove semua use example screen dan routenya
+13. remove folder app/Orchid/Screens/Examples
+14. remove semua menu example di app/Orchid/PlatformProvider.php
+15. pindahkan menu documentasi ke bagian bawah di app/Orchid/PlatformProvider.php
+16. Install yajra datatable, composer require yajra/laravel-datatables
+17. publish vendor datatable, php artisan vendor:publish --tag=datatables
+18. Buat component datatable, php artisan make:component Datatable --inline
+19. Copy paste component dari master component
+20. Copy paste folder Datatablephp artisan make:migration create_users_table
+21. jika ingin membuat semua route harus under login, hapus route "/" di routes/web.php dan ganti 'prefix' ke "/" di config/platform.php
+
+
+22. Membuat model, php artisan make:model Customer, 
+	jika sekaligus dengan migration gunakan -m, 
+	jika butuh data inisiasi anda butuh seeder gunakan -s, 
+	jika butuh controller gunakan -c, 
+	jika butuh fake data (untuk test) anda butuh factory gunakan -f,  
+	ketika menggunakan many-to-many relationship anda butuh pivot gunakan --pivot
+23. Buat screen, php artisan orchid:screen Data/DataCustomerScreen
+24. Register route di /routes/platform.php
+	Route::screen('data/customer', DataCustomerScreen::class)
+		->name('platform.data.customer')
+		->breadcrumbs(function (Trail $trail) {
+		    return $trail
+		        ->parent('platform.index')
+		        ->push(__('Customer'), route('platform.data.customer'));
+		});
+25. Register permision di 
+	ItemPermission::group(__('Data'))
+ 	      ->addPermission('platform.data.customer', __('Customer')),
+26. Register menu di app/Orchid/PlatformProvider.php
+	Menu::make(__('Customer'))
+                ->icon('user')
+                ->route('platform.data.customer')
+                ->permission('platform.data.customer')
+                ->title(__('Data')),
+27. Edit screen tambahakan library, 
+	use App\View\Components\Datatable; // untuk menambahkan component datatable yang sebelumnya sudah dibuat
+	use Orchid\Support\Facades\Layout; // untuk menambahkan fitur layout
+	use Yajra\Datatables\Datatables;	//untuk menambahkan class datatables untuk generate json datatable
+	use App\Models\Customer; //untuk menambahkan model customer, untuk generate query
+28 copy bagian query dari master atau copy secara keseluruhan tapi hanya perlu ganti nama2nya saja
